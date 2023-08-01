@@ -1,0 +1,20 @@
+<mat-form-field class="example-form-field">
+  <input
+    matInput
+    type="text"
+    placeholder="Search for a City"
+    [formControl]="queryField"
+  />
+  <button
+    *ngIf="queryField.value"
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="searchForCities(queryField.value)"
+  >
+    <mat-icon>close</mat-icon>
+  </button></mat-form-field
+>
+<button mat-button (click)="searchForCities(queryField.value?.toString())">
+  Search
+</button>
