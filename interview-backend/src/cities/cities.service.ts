@@ -520,4 +520,24 @@ export class CitiesService {
     const found = this.cities.find((ele) => ele.cityName === capitalisedCity);
     return found;
   }
+
+  findCity(query: string): City[] {
+    // const filtered = this.filterByValue(this.cities, query);
+    // return filtered;
+    const filteredCites = this.cities.filter((o) =>
+      Object.keys(o).some((k) =>
+        String(o[k]).toLowerCase().includes(query.toLowerCase()),
+      ),
+    );
+    console.log(filteredCites);
+    return filteredCites;
+  }
+
+  // filterByValue(array, string) {
+  //   return array.filter((o) =>
+  //     Object.keys(o).some((k) =>
+  //       String(o[k]).toLowerCase().includes(string.toLowerCase()),
+  //     ),
+  //   );
+  // }
 }
