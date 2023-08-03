@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CitiesService } from './cities.service';
-import { City } from '../../dist/interfaces/city.interface';
+import { City } from '../interfaces/city.interface';
 
 @Controller('cities')
 export class CitiesController {
