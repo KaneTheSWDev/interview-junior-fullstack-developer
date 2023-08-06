@@ -9,14 +9,8 @@ import { HttpClient } from '@angular/common/http';
 import { City } from '../interface/city.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  fromEvent,
-  map,
-  switchMap,
-} from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { Observable, Subscription, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -28,31 +22,40 @@ export class AppComponent implements OnInit {
   cities: City[] = [];
   displayedColumns = ['name', 'count'];
   dataSource = new MatTableDataSource<City>();
+  inputObservable$: Observable<any> = new Observable();
+  subscription: Subscription | null = null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
-  maxEntries = 5;
+  searchControl = new FormControl();
 
-  @ViewChild('movieSearchInput', { static: true })
-  movieSearchInput!: ElementRef;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+
+  }
 
   ngOnInit(): void {
-    fromEvent(this.movieSearchInput.nativeElement, 'keyup').pipe(
-      map((event: any) => event.target.value),
-      filter((res) => res.length > 2),
-      debounceTime(1000),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        return this.httpClient
-          .get(`http://localhost:3000/api/cities/${term}`)
-          .subscribe((res: any) => {
-            console.log(res);
-            this.cities = res;
-            this.dataSource = new MatTableDataSource(this.cities);
-            this.dataSource.paginator = this.paginator;
-          });
-      })
-    );
+    this.inputObservable$ = this.searchControl.valueChanges.pipe(debounceTime(400));
+    this.subscription = this.inputObservable$.subscribe((value) => {
+      if (!value || value === '') {
+        this.cities = [];
+        this.populateTable();
+        return;
+      }
+
+      this.httpClient
+        .get(`http://localhost:3000/api/cities/${value}`)
+        .subscribe((res: any) => {
+          this.cities = res;
+          this.populateTable();
+        });
+    });
+  } 
+
+  populateTable() {
+    this.dataSource = new MatTableDataSource(this.cities);
+    this.dataSource.paginator = this.paginator;
   }
+
 }
+
+
