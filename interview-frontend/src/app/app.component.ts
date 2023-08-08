@@ -11,6 +11,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription, debounceTime } from 'rxjs';
+import { CitiesService } from './cities.service';
 
 @Component({
   selector: 'app-root',
@@ -28,13 +29,12 @@ export class AppComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
   searchControl = new FormControl();
 
-
-  constructor(private httpClient: HttpClient) {
-
-  }
+  constructor(private cityService: CitiesService) {}
 
   ngOnInit(): void {
-    this.inputObservable$ = this.searchControl.valueChanges.pipe(debounceTime(400));
+    this.inputObservable$ = this.searchControl.valueChanges.pipe(
+      debounceTime(400)
+    );
     this.subscription = this.inputObservable$.subscribe((value) => {
       if (!value || value === '') {
         this.cities = [];
@@ -42,20 +42,15 @@ export class AppComponent implements OnInit {
         return;
       }
 
-      this.httpClient
-        .get(`http://localhost:3000/api/cities/${value}`)
-        .subscribe((res: any) => {
-          this.cities = res;
-          this.populateTable();
-        });
+      this.cityService.getCities(value).subscribe((res: City[]) => {
+        this.cities = res;
+        this.populateTable();
+      });
     });
-  } 
+  }
 
   populateTable() {
     this.dataSource = new MatTableDataSource(this.cities);
     this.dataSource.paginator = this.paginator;
   }
-
 }
-
-

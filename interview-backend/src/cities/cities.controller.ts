@@ -8,7 +8,6 @@ export class CitiesController {
 
   @Get(':name')
   async getCityByName(@Param('name') cityName: string): Promise<City[]> {
-    console.log(cityName);
     return this.citiesService.findCity(cityName);
   }
 }

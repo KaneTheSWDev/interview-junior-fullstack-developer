@@ -7,10 +7,12 @@ import { City } from 'src/interface/city.interface';
   providedIn: 'root',
 })
 export class CitiesService {
-  private url = 'https://localhost:3000/cities';
+  private cities$: Observable<City[]> = new Observable();
+  private url = 'http://localhost:3000/api/cities';
   constructor(private httpClient: HttpClient) {}
 
-  // getCities(): Observable<City[]> {
-  //   return this.httpClient.get(this.url);
-  // }
+  getCities(query: string): Observable<City[]> {
+    this.cities$ = this.httpClient.get<City[]>(`${this.url}/${query}`);
+    return this.cities$;
+  }
 }

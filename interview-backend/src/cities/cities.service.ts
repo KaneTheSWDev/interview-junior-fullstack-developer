@@ -507,37 +507,12 @@ export const mockedCities: City[] = [
 export class CitiesService {
   private readonly cities = mockedCities;
 
-  findAllCities(): City[] {
-    return this.cities;
-  }
-
-  searchForCity(cityName: string): City {
-    // has to be uppercase first letter
-    const capitalisedCity =
-      cityName.charAt(0).toUpperCase() + cityName.slice(1);
-    console.log(`captialised city ${capitalisedCity}`);
-
-    const found = this.cities.find((ele) => ele.cityName === capitalisedCity);
-    return found;
-  }
-
   findCity(query: string): City[] {
-    // const filtered = this.filterByValue(this.cities, query);
-    // return filtered;
     const filteredCites = this.cities.filter((o) =>
       Object.keys(o).some((k) =>
         String(o[k]).toLowerCase().includes(query.toLowerCase()),
       ),
     );
-    console.log(filteredCites);
     return filteredCites;
   }
-
-  // filterByValue(array, string) {
-  //   return array.filter((o) =>
-  //     Object.keys(o).some((k) =>
-  //       String(o[k]).toLowerCase().includes(string.toLowerCase()),
-  //     ),
-  //   );
-  // }
 }
