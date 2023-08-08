@@ -6,17 +6,6 @@ import { City } from '../interfaces/city.interface';
 export class CitiesController {
   constructor(private readonly citiesService: CitiesService) {}
 
-  @Get()
-  async getCities(): Promise<City[]> {
-    return this.citiesService.findAllCities();
-  }
-
-  // @Get(':name')
-  // async getCityByName(@Param('name') cityName: string): Promise<City> {
-  //   console.log(cityName);
-  //   return this.citiesService.searchForCity(cityName);
-  // }
-
   @Get(':name')
   async getCityByName(@Param('name') cityName: string): Promise<City[]> {
     console.log(cityName);
